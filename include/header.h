@@ -8,8 +8,8 @@
 
 #include <fmt/format.h>
 
-static void PrintMessage(const std::string& message) {
+static void print_message(const std::string& message) {
   fmt::println(message);
 }
 
-#endif //  PROJECT_HEADER_H_
+#endif  // PROJECT_HEADER_H_

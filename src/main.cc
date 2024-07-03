@@ -1,6 +1,6 @@
 #include "header.h"
 
 int main() {
-  PrintMessage("Hello, world!");
+  print_message("Hello, world!");
   return 0;
 }
