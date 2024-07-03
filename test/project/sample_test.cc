@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
 
-TEST(ProjectTest, TestName) {
+TEST(ProjectTest, SampleTest) {
   ASSERT_TRUE(true);
 }
