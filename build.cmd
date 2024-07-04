@@ -2,15 +2,12 @@
 
 setlocal enabledelayedexpansion
 
-@REM Set project root
-set root=%cd%
-
-set "VCPKG_ROOT=%USERPROFILE%\vcpkg"
-set "PATH=%VCPKG_ROOT%;%PATH%"
+set "project_root=%cd%"
+set "vcpkg_root=%USERPROFILE%\vcpkg"
 
 @REM Check if vcpkg is installed
-if not exist %VCPKG_ROOT% (
-  echo Warn: vcpkg is not installed.
+if not exist %vcpkg_root% (
+  echo Warning: vcpkg is not installed.
   echo Installing vcpkg...
 
   cd %USERPROFILE%
@@ -22,7 +19,7 @@ if not exist %VCPKG_ROOT% (
 
   echo vcpkg was successfully installed.
   echo Please rerun this script.
-  cd %root%
+  cd %project_root%
 )
 
 @REM Check if an argument is provided and validate it
@@ -63,7 +60,7 @@ if /I "!build_type!"=="Release" (
 )
 
 @REM Run tests
-set "test_dir=%root%\%build_dir%\test"
+set "test_dir=%project_root%\%build_dir%\test"
 ctest --test-dir %test_dir% --build-config Debug --output-on-failure --parallel 4
 
 endlocal

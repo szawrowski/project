@@ -1,14 +1,11 @@
 #!/bin/bash
 
-# Set project root
-root=$(pwd)
-
-export VCPKG_ROOT="$HOME/vcpkg"
-export PATH="$VCPKG_ROOT:$PATH"
+project_root=$(pwd)
+vcpkg_root="$HOME/vcpkg"
 
 # Check if vcpkg is installed
-if [[ ! -d "$VCPKG_ROOT" ]]; then
-  echo "Warn: vcpkg is not installed."
+if [[ ! -d $vcpkg_root ]]; then
+  echo "Warning: vcpkg is not installed."
   echo "Installing vcpkg..."
 
   cd $HOME
@@ -18,7 +15,7 @@ if [[ ! -d "$VCPKG_ROOT" ]]; then
   cd vcpkg && ./bootstrap-vcpkg.sh
 
   echo "vcpkg was successfully installed."
-  cd $root
+  cd $project_root
 fi
 
 # Check if an argument is provided and validate it
@@ -27,9 +24,9 @@ if [[ "$#" -eq 1 ]]; then
   build_type=$(echo "$1" | tr '[:upper:]' '[:lower:]')
 
   # Check if the provided argument is either Release or Debug
-  if [ "$build_type" == "release" ]; then
+  if [ $build_type == "release" ]; then
     build_type="Release"
-  elif [ "$build_type" == "debug" ]; then
+  elif [ $build_type == "debug" ]; then
     build_type="Debug"
   else
     echo "Error: Invalid build type '$build_type'."
@@ -53,10 +50,10 @@ cmake -S . -B $build_dir -G "Ninja" -DCMAKE_BUILD_TYPE=$build_type
 # Build the targets
 cmake --build $build_dir --parallel 4
 
-if [ "$build_type" == "Release" ]; then
+if [ $build_type == "Release" ]; then
   cmake --install $build_dir
 fi
 
 # Run tests
-test_dir="$root/$build_dir/test/"
+test_dir="$project_root/$build_dir/test/"
 ctest --test-dir $test_dir --build-config Debug --output-on-failure --parallel 4
