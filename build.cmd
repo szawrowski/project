@@ -2,6 +2,7 @@
 
 setlocal enabledelayedexpansion
 
+@REM Set project root
 set root=%cd%
 
 set "VCPKG_ROOT=%USERPROFILE%\vcpkg"
@@ -19,7 +20,7 @@ if not exist %VCPKG_ROOT% (
   @REM Run the vcpkg installation script
   cd vcpkg && bootstrap-vcpkg.bat
 
-  echo vcpkg was successfuly installed.
+  echo vcpkg was successfully installed.
   echo Please rerun this script.
   cd %root%
 )
@@ -48,18 +49,21 @@ if "%~1"=="" (
 @REM Build type message
 echo Build type: %build_type%
 
+@REM Set build directory
+set "build_dir=build\%build_type%"
+
 @REM Run cmake with the appropriate build type
-cmake -S . -B build\%build_type% -DCMAKE_BUILD_TYPE=%build_type% --preset=default
+cmake -S . -B %build_dir% -G "Ninja" -DCMAKE_BUILD_TYPE=%build_type%
 
 @REM Build the targets
-cmake --build build\%build_type% --parallel 4
+cmake --build %build_dir% --parallel 4
 
 if /I "!build_type!"=="Release" (
-  cmake --install build\%build_type%
+  cmake --install %build_dir%
 )
 
 @REM Run tests
-set "test_dir=%root%\build\%build_type%\test"
+set "test_dir=%root%\%build_dir%\test"
 ctest --test-dir %test_dir% --build-config Debug --output-on-failure --parallel 4
 
 endlocal
