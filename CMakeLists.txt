@@ -1,14 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
 
-if(UNIX)
-  set(TOOLCHAIN_PATH "$ENV{HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake")
-elseif(WIN32)
-  set(TOOLCHAIN_PATH "$ENV{HOMEPATH}/vcpkg/scripts/buildsystems/vcpkg.cmake")
-endif()
-
-set(CMAKE_TOOLCHAIN_FILE ${TOOLCHAIN_PATH}
-    CACHE STRING "Vcpkg toolchain file")
-
 project(project)
 
 set(CMAKE_CXX_STANDARD 17)

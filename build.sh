@@ -1,5 +1,25 @@
 #!/bin/bash
 
+root=$(pwd)
+
+export VCPKG_ROOT="$HOME/vcpkg"
+export PATH="$VCPKG_ROOT:$PATH"
+
+# Check if vcpkg is installed
+if [[ ! -d "$VCPKG_ROOT" ]]; then
+  echo "Warn: vcpkg is not installed."
+  echo "Installing vcpkg..."
+
+  cd $HOME
+  # Download vcpkg using Git
+  git clone https://github.com/microsoft/vcpkg.git
+  # Run the vcpkg installation
+  cd vcpkg && ./bootstrap-vcpkg.sh
+
+  echo "vcpkg was successfully installed."
+  cd $root
+fi
+
 # Check if an argument is provided and validate it
 if [[ "$#" -eq 1 ]]; then
   # Convert the argument to lowercase
@@ -24,7 +44,7 @@ fi
 echo "Build type: $build_type"
 
 # Run cmake with the appropriate build type
-cmake -S . -B build/$build_type/ -DCMAKE_BUILD_TYPE=$build_type
+cmake -S . -B build/$build_type/ -DCMAKE_BUILD_TYPE=$build_type --preset=default
 
 # Build the targets
 cmake --build build/$build_type/ --parallel 4
@@ -34,5 +54,5 @@ if [ "$build_type" == "Release" ]; then
 fi
 
 # Run tests
-cd build/$build_type/test/
-ctest --build-config Debug --target all --output-on-failure --parallel 4
+test_dir="$root/build/$build_type/test/"
+ctest --test-dir $test_dir --build-config Debug --output-on-failure --parallel 4
